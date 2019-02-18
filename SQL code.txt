@@ -1,0 +1,117 @@
+CREATE TABLE DEPARTMENT
+(
+  De_Id CHAR(3) NOT NULL,
+  De_Name VARCHAR(20) NOT NULL,
+  De_Phone_Number CHAR(12) NOT NULL,
+  PRIMARY KEY (De_Id)
+);
+
+CREATE TABLE STAFF
+(
+  Staff_Id CHAR(4) NOT NULL,
+  Staff_Phone_Number CHAR(12) NOT NULL,
+  Staff_Address VARCHAR(20) NOT NULL,
+  Staff_Position VARCHAR(20) NOT NULL,
+  Staff_First_Name VARCHAR(20) NOT NULL,
+  Staff_Last_Name VARCHAR(20) NOT NULL,
+  De_Id CHAR(3) NOT NULL,
+  PRIMARY KEY (Staff_Id),
+  FOREIGN KEY (De_Id) REFERENCES DEPARTMENT(De_Id),
+  UNIQUE (Staff_Phone_Number)
+);
+
+CREATE TABLE BUILDING
+(
+  Building_Id CHAR(2) NOT NULL,
+  Building_Name VARCHAR(20) NOT NULL,
+  PRIMARY KEY (Building_Id)
+);
+
+CREATE TABLE CLASSROOM
+(
+  Classroom_Id CHAR(3) NOT NULL,
+  Building_Id CHAR(2) NOT NULL,
+  Classroom_Location CHAR(5) NOT NULL,
+  Courses_Taught CHAR(8) NOT NULL,
+  PRIMARY KEY (Classroom_Id, Building_Id),
+  FOREIGN KEY (Building_Id) REFERENCES BUILDING(Building_Id)
+);
+
+CREATE TABLE STUDENT
+(
+  Student_Id CHAR(7) NOT NULL,
+  Student_Address VARCHAR(20) NOT NULL,
+  DOB CHAR(10) NOT NULL,
+  Student_First_Name VARCHAR(20) NOT NULL,
+  Student_Last_Name VARCHAR(20) NOT NULL,
+  Student_Phone_Number CHAR(12) NOT NULL,
+  PRIMARY KEY (Student_Id),
+  UNIQUE (DOB),
+  UNIQUE (Student_Phone_Number)
+);
+
+CREATE TABLE STUDENT_Stuedent_Courses_Taken
+(
+  Stuedent_Courses_Taken CHAR(8) NOT NULL,
+  Student_Id CHAR(7) NOT NULL,
+  PRIMARY KEY (Stuedent_Courses_Taken, Student_Id),
+  FOREIGN KEY (Student_Id) REFERENCES STUDENT(Student_Id)
+);
+
+CREATE TABLE OFFICE
+(
+  Office_Id CHAR(3) NOT NULL,
+  Building_Id CHAR(2) NOT NULL,
+  Office_Location CHAR(5) NOT NULL,
+  PRIMARY KEY (Office_Id, Building_Id),
+  FOREIGN KEY (Building_Id) REFERENCES BUILDING(Building_Id)
+);
+
+CREATE TABLE FACULTY
+(
+  Faculty_Id CHAR(4) NOT NULL,
+  Faculty_First_Name VARCHAR(20) NOT NULL,
+  Faculty_Last_Name VARCHAR(20) NOT NULL,
+  Faculty_Address VARCHAR(20) NOT NULL,
+  Faculty_Phone_Number CHAR(12) NOT NULL,
+  De_Id CHAR(3) NOT NULL,
+  Office_Id CHAR(3) NOT NULL,
+  Building_Id CHAR(2) NOT NULL,
+  PRIMARY KEY (Faculty_Id),
+  FOREIGN KEY (De_Id) REFERENCES DEPARTMENT(De_Id),
+  FOREIGN KEY (Office_Id, Building_Id) REFERENCES OFFICE(Office_Id, Building_Id),
+  UNIQUE (Faculty_Phone_Number)
+);
+
+CREATE TABLE COURSE
+(
+  Course_Id CHAR(8) NOT NULL,
+  Number_Of_Student INT NOT NULL,
+  Classroom_Assigned CHAR(5) NOT NULL,
+  De_Id CHAR(3) NOT NULL,
+  Classroom_Id CHAR(3) NOT NULL,
+  Building_Id CHAR(2) NOT NULL,
+  Faculty_Id CHAR(4) NOT NULL,
+  PRIMARY KEY (Course_Id),
+  FOREIGN KEY (De_Id) REFERENCES DEPARTMENT(De_Id),
+  FOREIGN KEY (Faculty_Id) REFERENCES FACULTY(Faculty_Id),
+  FOREIGN KEY (Classroom_Id, Building_Id) REFERENCES CLASSROOM(Classroom_Id, Building_Id)
+);
+
+CREATE TABLE Enrolls_In
+(
+  Course_Id CHAR(8) NOT NULL,
+  Student_Id CHAR(7) NOT NULL,
+  Enroll_Semester CHAR(6) NOT NULL,
+  PRIMARY KEY (Course_Id, Student_Id),
+  FOREIGN KEY (Course_Id) REFERENCES COURSE(Course_Id),
+  FOREIGN KEY (Student_Id) REFERENCES STUDENT(Student_Id)
+);
+
+CREATE TABLE FACULTY_Courses_Taught
+(
+  Courses_Taught CHAR(8) NOT NULL,
+  Faculty_Id CHAR(4) NOT NULL,
+  PRIMARY KEY (Courses_Taught, Faculty_Id),
+  FOREIGN KEY (Faculty_Id) REFERENCES FACULTY(Faculty_Id)
+);
